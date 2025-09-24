@@ -1,33 +1,44 @@
 #!/bin/sh
 
+# 检查参数数量是否正确
+if [ $# -ne 2 ]; then
+    echo "请提供两个参数: 用户名(Git提交记录中显示的名称) 和 你的邮箱"
+    echo "使用方法: $0 <username> <email>"
+    exit 1
+fi
+
+# 从参数获取用户名和邮箱
+USER_NAME="$1"
+MY_EMAIL="$2"
+
 cd ~
 USER_HOME_DIR="$PWD"
 PROFILE_PATH="$USER_HOME_DIR/.profile"
 
-MY_EMAIL="xxx.xxx@xxx.com"
-USER_NAME="xxxx"
-
-function updateGemSystem() {
-	sudo gem update —system
-}
-
 function installHomebrew() {
 	echo "\n####################"
 	echo "Install homebrew ......"
-	/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-	brew install ruby
+	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+	＃　
+	# 查看 brew 本体仓库信息
+	# git -C "$(brew --repo)" remote get-url origin
+
+	# 如果国内不能访问 github　或很慢时，可以使用镜像
+	# git -C "$(brew --repo)" remote set-url origin https://mirrors.ustc.edu.cn/brew.git
+	# git -C "$(brew --repo)" remote set-url origin https://github.com/Homebrew/brew.git
+
+	# brew　更新
+	# brew update
+
+	# 升级所有已安装的包到最新版本
+	# brew upgrade
+
+	# 清理缓存
+	# brew cleanup
+
+	brew --version
 	echo "Install homebrew done."
-}
-
-function installCocoapods() {
-	echo "\n####################"
-	echo "Install cocoapods ......"
-
-	sudo gem update --system
-	sudo gem install -n /usr/local/bin  cocoapods
-	pod setup
-
-	echo "Install cocoapods done."
 }
 
 function setupSSHKey() {
@@ -67,6 +78,9 @@ function setupGit() {
 	git config --global user.email "$MY_EMAIL"
 	git config --global color.ui true
 
+	# 关闭 Git 对非 ASCII 字符的转义（解决中文文件名显示为类似 \344\275\240\345\245\275 的问题）
+	git config --global core.quotepath false
+
 	# Git command completion
 	
 	curl -o git-completion.bash https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
@@ -84,9 +98,7 @@ function setupGit() {
 function startAutoSetup() {
 	echo "Automatical setup starts, it will cost you some time, just leave it doing tasks. Maybe some operations need you enter user account password."
 	
-	updateGemSystem
 	installHomebrew
-	installCocoapods
 	setupSSHKey
 	setupGit
 

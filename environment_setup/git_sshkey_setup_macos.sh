@@ -15,32 +15,6 @@ cd ~
 USER_HOME_DIR="$PWD"
 PROFILE_PATH="$USER_HOME_DIR/.profile"
 
-function installHomebrew() {
-	echo "\n####################"
-	echo "Install homebrew ......"
-	/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-
-	＃　
-	# 查看 brew 本体仓库信息
-	# git -C "$(brew --repo)" remote get-url origin
-
-	# 如果国内不能访问 github　或很慢时，可以使用镜像
-	# git -C "$(brew --repo)" remote set-url origin https://mirrors.ustc.edu.cn/brew.git
-	# git -C "$(brew --repo)" remote set-url origin https://github.com/Homebrew/brew.git
-
-	# brew　更新
-	# brew update
-
-	# 升级所有已安装的包到最新版本
-	# brew upgrade
-
-	# 清理缓存
-	# brew cleanup
-
-	brew --version
-	echo "Install homebrew done."
-}
-
 function setupSSHKey() {
 
 	echo "\n####################"
@@ -81,8 +55,14 @@ function setupGit() {
 	# 关闭 Git 对非 ASCII 字符的转义（解决中文文件名显示为类似 \344\275\240\345\245\275 的问题）
 	git config --global core.quotepath false
 
+	# 给常用命令设置别名，高效输入
+	sudo git config --system alias.st status
+	sudo git config --system alias.ci commit
+	sudo git config --system alias.co checkout
+	sudo git config --system alias.br branch
+	sudo git config --system alias.cp cherry-pick
+
 	# Git command completion
-	
 	curl -o git-completion.bash https://raw.githubusercontent.com/git/git/master/contrib/completion/git-completion.bash
 	cp git-completion.bash ~/.git-completion.bash
 	rm git-completion.bash
@@ -98,7 +78,6 @@ function setupGit() {
 function startAutoSetup() {
 	echo "Automatical setup starts, it will cost you some time, just leave it doing tasks. Maybe some operations need you enter user account password."
 	
-	installHomebrew
 	setupSSHKey
 	setupGit
 

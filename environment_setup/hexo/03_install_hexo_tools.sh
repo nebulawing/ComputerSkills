@@ -15,4 +15,6 @@ npm install hexo-filter-github-emojis --save
 # RSS feed 支持
 npm install hexo-generator-feed --save
 
+npm install hexo-renderer-marked --save
+
 
